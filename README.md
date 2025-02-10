@@ -1,3 +1,4 @@
+@@ -1,26 +1,26 @@
 #Thesis_Armenia
 ##Vegetation Analysis
 Questo progetto esegue un'analisi dettagliata della vegetazione utilizzando diversi indici di diversità, profili di diversità e modelli additivi generalizzati (GAM). I dati sulla vegetazione e sull'ambiente vengono letti da un file Excel e vengono calcolati vari indici di diversità e componenti della diversità beta.
