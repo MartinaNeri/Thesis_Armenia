@@ -20,12 +20,12 @@
   ## 1. Calcolo degli Indici di Diversità:
     -Indice di Shannon
     -Indice di Simpson (Inverse Simpson)
-		-Ricchezza specifica
-		-Abbondanza totale
-		-Indice di Margalef
-		-Indice di Menhinick
-		-Average Evenness Diversity (AED)
-		-Viene inoltre creato un boxplot per visualizzare la distribuzione degli indici calcolati.
+    -Ricchezza specifica
+    -Abbondanza totale
+    -Indice di Margalef
+    -Indice di Menhinick
+    -Average Evenness Diversity (AED)
+    -Viene inoltre creato un boxplot per visualizzare la distribuzione degli indici calcolati.
 	
  ## 2. Profilo di Diversità di Renyi:
  	Calcolo del profilo di diversità di Renyi a diverse scale di equità
