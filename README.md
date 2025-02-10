@@ -4,7 +4,6 @@ Questo progetto esegue un'analisi dettagliata della vegetazione utilizzando dive
 
 ##Requirements
 R packages necessari per l'analisi:
-
 -readxl – Per leggere i dati da file Excel
 -vegan – Per calcolare gli indici di diversità e la diversità beta
 -ggplot2 – Per creare grafici e visualizzazioni
