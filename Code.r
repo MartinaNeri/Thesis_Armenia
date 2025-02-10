@@ -35,7 +35,7 @@ veg_matrix_t <- t(veg_matrix)
 # Converte la matrice in una matrice di presenza/assenza
 veg_matrix_pa <- ifelse(veg_matrix_t > 0, 1, 0)
 
-############### 1.1 INDICES AND BOXPLOT
+############### 1.1 INDICES AND BOXPLOT ###############
 
 # Calcolo dell'indice di Shannon per ogni colonna
 shannon_diversity <- diversity(veg_matrix_t, index = "shannon")
@@ -90,7 +90,7 @@ env_index <- data.frame(
 )
 print(env_index)
 
-############### 2. RENYI DIVERSITY PROFILE
+############### 2. RENYI DIVERSITY PROFILE ###############
 
 # Valutare la diversità considerando diverse scale di equità
 # Il profilo mostra come la diversità cambia in base all’enfasi sulle specie rare o dominanti.
@@ -122,34 +122,86 @@ renyi_df <- pivot_longer(as.data.frame(renyi_profile), cols = everything(), name
 renyi_df$scale <- as.numeric(renyi_df$scale)
 print(renyi_df)
 
-# Plot del profilo di diversità Renyi
+# Plot del profilo di diversità Renyi migliorato
 renyi_plot <- ggplot(renyi_df, aes(x = scale, y = diversity)) +
-  geom_line() +
-  labs(title = "Renyi Diversity Profile", x = "Scale parameter", y = "Diversity")
+  geom_line(color = "blue", linewidth = 1) +  # Linea blu più spessa
+  geom_point(color = "red", size = 2) +  # Punti rossi
+  labs(title = "Renyi Diversity Profile", x = "Scale parameter", y = "Diversity") +
+  theme_minimal() +  # Tema minimalista per migliorare la leggibilità
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),  # Centrare il titolo e renderlo più grande
+    axis.title = element_text(size = 12),  # Dimensione dei titoli degli assi
+    axis.text = element_text(size = 10)  # Dimensione dei testi degli assi
+  ) +
+  geom_vline(xintercept = seq(0, 3, by = 0.5), linetype = "dashed", color = "grey", size = 0.5) +  # Linee verticali tratteggiate
+  geom_hline(yintercept = seq(0, max(renyi_df$diversity), by = 0.5), linetype = "dashed", color = "grey", size = 0.5)  # Linee orizzontali tratteggiate
 print(renyi_plot)
 
+#La linea blu rappresenta il profilo di diversità di Renyi per le tue campionature di vegetazione. 
+#Ogni punto lungo la linea mostra la diversità calcolata per un particolare 
+#parametro di scala (indicato sull'asse delle X). La scala di Renyi è un continuum di indici
+#di diversità che va da 0 a 3 (in questo caso), e ogni valore sulla scala riflette 
+#una diversa sensibilità alla rarità delle specie.
+#Linee tratteggiate grigie: Le linee tratteggiate grigie sull'asse X e Y aiutano a visualizzare meglio i valori 
+#specifici di diversità per ciascun parametro di scala e per ciascuna campionatura di vegetazione.
+#I punti rossi rappresentano i valori specifici di diversità calcolati per ciascun parametro di scala. 
+#Questi punti sono effettivamente i dati calcolati dalla funzione renyi per ogni campionatura di vegetazione.
 
-ggplot(renyi_df, aes(x = scale, y = diversity, group = interaction(row_number()), color = factor(row_number()))) +
-  geom_line() +
-  labs(title = "Renyi Diversity Profile", x = "Scale parameter", y = "Diversity") +
-  theme_minimal()
 
-############### 3. NON-METRIC MULTIDIMENSIONAL SCALING (NMDS)
+############### 3. NON-METRIC MULTIDIMENSIONAL SCALING (NMDS) ###############
 
 # Calcolo della metrica di dissimilarità di Bray-Curtis
 veg_bray <- vegdist(veg_matrix_t, method = "bray")
 
-# NMDS
+#NMDS
+#NMDS è una tecnica di ordinamento che cerca di rappresentare le relazioni di dissimilarità 
+#tra le osservazioni in uno spazio a bassa dimensione (in questo caso, 2 dimensioni).
+#k = 2 indica che stiamo cercando di rappresentare i dati in uno spazio bidimensionale.
+#Stress: Lo "stress" è una misura di quanto bene l'ordinamento a bassa dimensione 
+#rappresenta le relazioni di dissimilarità originali. Un valore di stress più basso indica una migliore rappresentazione.
+#Procrustes: La trasformazione di Procrustes è utilizzata per confrontare diverse 
+#soluzioni di ordinamento. rmse (Root Mean Square Error) e max resid (residuo massimo) 
+#sono misure di quanto bene le soluzioni si allineano. Un valore di rmse più basso indica un migliore allineamento.
+
 nmds <- metaMDS(veg_bray, k = 2)
 print(nmds)
 
-# Plot NMDS
-nmds_plot <- ggplot(as.data.frame(scores(nmds)), aes(x = NMDS1, y = NMDS2)) +
+#global Multidimensional Scaling using monoMDS
+
+#Data:     veg_bray 
+#Distance: bray 
+
+#Dimensions: 2 
+#Stress:     0.124161 
+#Stress type 1, weak ties
+#Best solution was not repeated after 20 tries
+#The best solution was from try 15 (random start)
+#Scaling: centring, PC rotation, halfchange scaling 
+#Species: scores missing
+
+#Il valore di stress è 0.1242231. Lo stress è una misura di quanto bene l'ordinamento 
+#bidimensionale rappresenta le relazioni di dissimilarità originali tra i campioni. 
+#Un valore di stress più basso indica una migliore rappresentazione (è accettabile)
+
+# Ottenere le coordinate NMDS e aggiungere i numeri dei campioni
+nmds_scores <- as.data.frame(scores(nmds))
+nmds_scores$Sample <- rownames(nmds_scores)
+
+
+# Plot NMDS con numeri dei campioni come etichette
+nmds_plot <- ggplot(nmds_scores, aes(x = NMDS1, y = NMDS2, label = Sample)) +
   geom_point() +
-  labs(title = "Non-metric Multidimensional Scaling (NMDS)", x = "NMDS1", y = "NMDS2")
+  geom_text(vjust = -0.5, hjust = 0.5) +
+  labs(title = "Non-metric Multidimensional Scaling (NMDS)", x = "NMDS1", y = "NMDS2") +
+  theme_minimal()
 print(nmds_plot)
 
-############### 4. ANALISI DELLA VARIANZA PERMUTAZIONALE (PERMANOVA)
+#Ogni punto nel grafico rappresenta un campione di vegetazione.
+#La posizione dei punti è determinata dalle relazioni di dissimilarità tra i campioni. 
+#Campioni che sono più simili tra loro saranno rappresentati vicini nel grafico, 
+#mentre campioni più dissimili saranno rappresentati più lontani.
+
+############### 4. ANALISI DELLA VARIANZA PERMUTAZIONALE (PERMANOVA) ###############
 
 # PERMANOVA con indice di Bray-Curtis
 permanova_bray <- adonis2(veg_matrix_t ~ veg_altitude, method = "bray")
@@ -158,6 +210,19 @@ print(permanova_bray)
 # PERMANOVA con indice di Jaccard
 permanova_jaccard <- adonis2(veg_matrix_t ~ veg_altitude, method = "jaccard")
 print(permanova_jaccard)
+
+#Entrambe le analisi PERMANOVA con gli indici di Bray-Curtis e Jaccard indicano 
+#che l'altitudine ha un effetto significativo sulla composizione delle specie di 
+#vegetazione nel tuo dataset. I valori p (0.001) sono molto bassi, suggerendo una 
+#forte evidenza contro l'ipotesi nulla (che l'altitudine non ha effetto sulla composizione delle specie).
+#Bray-Curtis: Spiega circa il 7.887% della variazione nella composizione delle specie.
+#Jaccard: Spiega circa il 5.594% della variazione nella composizione delle specie.
+#Questi risultati possono essere utilizzati per supportare l'ipotesi che l'altitudine 
+#influenzi la composizione delle comunità vegetali.
+
+#I bassi valori di ( R^2 ) indicano che l'altitudine spiega solo una porzione limitata 
+#della variazione totale nella composizione delle specie.
+#Tuttavia, il fatto che il valore ( p ) sia molto basso (( p < 0.001 )) significa che l'effetto dell'altitudine è comunque statisticamente significativo. Questo suggerisce che, anche se l'effetto è piccolo, è reale e non dovuto al caso.
 
 ############### 5. DIVERSITÀ BETA CON BETAPART PACKAGE
 
@@ -171,33 +236,173 @@ beta_nestedness <- beta_pair$beta.sne
 print(beta_turnover)
 print(beta_nestedness)
 
-############### 6. GENERALIZED ADDITIVE MODEL
+# Converti le matrici in data frame per la scrittura nei file CSV
+#beta_turnover_df <- as.data.frame(as.matrix(beta_turnover))
+#beta_nestedness_df <- as.data.frame(as.matrix(beta_nestedness))
+
+# Scrittura dei dati nei file CSV
+#write.csv(beta_turnover_df, "Beta_Turnover.csv", row.names = TRUE)
+#write.csv(beta_nestedness_df, "Beta_Nestedness.csv", row.names = TRUE)
+
+
+#########5.2 CALCOLO DELLA DIVERSITÀ BETA USANDO IL METODO DI BASELGA##########
+
+# Calcolo della diversità beta utilizzando il metodo di Baselga
+
+# Calcola la diversità beta totale
+beta_total <- beta.pair(veg_matrix_pa, index.family = "jaccard")
+print(beta_total)
+
+# Partiziona la diversità beta nelle sue componenti di turnover e nestedness
+beta_turnover_jaccard <- beta_total$beta.jtu
+beta_nestedness_jaccard <- beta_total$beta.jne
+print(beta_turnover_jaccard)
+print(beta_nestedness_jaccard)
+
+# Calcolo delle misure multiple-site
+beta_multi <- beta.multi(veg_matrix_pa, index.family = "sorensen")
+print(beta_multi)
+
+#$beta.SIM
+#[1] 0.98795
+#rappresenta il turnover delle specie, cioè la proporzione di differenze nella composizione 
+#delle specie dovuta alla sostituzione di specie tra i siti. Un valore vicino a 1 
+#indica un alto turnover, suggerendo che la maggior parte della dissimilarità è dovuta 
+#al fatto che le specie presenti in un sito non sono presenti in un altro.
+
+#$beta.SNE
+#[1] 0.006268038
+#rappresenta il nestedness della diversità beta, cioè la proporzione di differenze 
+#nella composizione delle specie dovuta alla perdita o guadagno di specie tra i siti. 
+#Un valore vicino a 0 indica che il nestedness contribuisce poco alla dissimilarità complessiva.
+
+#$beta.SOR
+#[1] 0.9942181
+#rappresenta la dissimilarità totale di Sørensen, combinando sia il turnover che il nestedness. 
+#Un valore vicino a 1 indica un'alta dissimilarità totale tra i siti.
+
+
+# Misure multiple-site per la famiglia di Jaccard
+beta_multi_jaccard <- beta.multi(veg_matrix_pa, index.family = "jaccard")
+print(beta_multi_jaccard)
+
+#$beta.JTU
+#[1] 0.9939385
+#rappresenta il turnover delle specie nella famiglia di Jaccard. Analogamente a 
+#βSIM, un valore vicino a 1 indica un alto turnover.
+
+#$beta.JNE
+#[1] 0.003162158
+#appresenta il nestedness della diversità beta nella famiglia di Jaccard. 
+#Analogamente a βSNE, un valore vicino a 0 indica che il nestedness contribuisce 
+#poco alla dissimilarità complessiva.
+
+#$beta.JAC
+#[1] 0.9971007
+#rappresenta la dissimilarità totale di Jaccard, combinando sia il turnover che 
+#il nestedness. Un valore vicino a 1 indica un'alta dissimilarità totale tra i siti.
+
+
+############### 5. DIVERSITÀ BETA CON BETAPART PACKAGE
+
+# Calcolo della diversità beta utilizzando la matrice di presenza/assenza
+beta_pair <- beta.pair(veg_matrix_pa, index.family = "jaccard")
+print(beta_pair)
+
+# Estrazione delle componenti turnover e nestedness
+beta_turnover <- beta_pair$beta.jtu
+beta_nestedness <- beta_pair$beta.jne
+print(beta_turnover)
+print(beta_nestedness)
+
+# Converti le matrici in data frame per la scrittura nei file CSV
+#beta_turnover_df <- as.data.frame(as.matrix(beta_turnover))
+#beta_nestedness_df <- as.data.frame(as.matrix(beta_nestedness))
+
+# Scrittura dei dati nei file CSV
+#write.csv(beta_turnover_df, "Beta_Turnover.csv", row.names = TRUE)
+#write.csv(beta_nestedness_df, "Beta_Nestedness.csv", row.names = TRUE)
+
+# Aggiunta delle analisi proposte da Baselga
+
+# Calcola la diversità beta totale
+beta_total <- beta.pair(veg_matrix_pa, index.family = "jaccard")
+print(beta_total)
+
+# Partiziona la diversità beta nelle sue componenti di turnover e nestedness
+beta_turnover_jaccard <- beta_total$beta.jtu
+beta_nestedness_jaccard <- beta_total$beta.jne
+print(beta_turnover_jaccard)
+print(beta_nestedness_jaccard)
+
+# Calcolo delle misure multiple-site
+beta_multi_jaccard <- beta.multi(veg_matrix_pa, index.family = "jaccard")
+print(beta_multi_jaccard)
+
+#$beta.JTU
+#[1] 0.9849822
+#rappresenta il turnover delle specie nella famiglia di Jaccard. Un valore vicino a 1 
+#indica un alto turnover, suggerendo che la maggior parte della dissimilarità tra 
+#i siti è dovuta alla sostituzione delle specie. In altre parole, i siti tendono ad avere 
+#specie differenti tra loro.
+
+#$beta.JNE
+#[1] 0.005062547
+#rappresenta il nestedness della diversità beta nella famiglia di Jaccard. 
+#Un valore vicino a 0 indica che il nestedness contribuisce poco alla dissimilarità complessiva, 
+#suggerendo che le specie presenti in un sito non sono semplicemente un sottoinsieme 
+#di quelle presenti in un altro sito. Il nestedness descrive quanto i siti con meno 
+#specie sono sottoinsiemi di siti più ricchi di specie.
+
+
+#$beta.JAC
+#[1] 0.9900448
+#rappresenta la dissimilarità totale di Jaccard, combinando sia il turnover che il nestedness.
+#Un valore vicino a 1 indica un'alta dissimilarità totale tra i siti. Questo significa che 
+#i siti tendono ad avere composizioni di specie molto diverse tra loro.
+
+
+############### 6. GENERALIZED ADDITIVE MODEL (GAM) ###############
+
+# Utilizziamo i modelli additivi generalizzati (GAM) per studiare l'effetto dell'altitudine 
+# sulla ricchezza delle specie e sulla diversità di Shannon.
 
 # GAM per studiare l'influenza dell'elevazione sulla ricchezza delle specie
-gam_richness <- gam(veg_richness ~ s(veg_altitude), data = env_index)
+# ho aumentato k con maggiore complessità
+gam_richness <- gam(veg_richness ~ s(veg_altitude, k = 30), data = env_index)
 summary(gam_richness)
+
+#R-sq.(adj): 0.798 il coefficiente di determinazione aggiustato, che rappresenta la proporzione 
+#della variabilità nella ricchezza delle specie spiegata dal modello. 
+#Un valore di 0.798 indica che il modello spiega circa il 60.9% della variabilità totale.
 
 # GAM per studiare l'influenza dell'elevazione sulla diversità di Shannon
 gam_shannon <- gam(Shannon ~ s(Altitude), data = env_index)
 summary(gam_shannon)
 
-# Previsione del modello GAM per la ricchezza delle specie
+#R-sq.(adj): 0.651 il coefficiente di determinazione aggiustato, che rappresenta la proporzione
+#della variabilità nella diversità di Shannon spiegata dal modello. Un valore di 0.651 indica 
+#che il modello spiega circa il 65.1% della variabilità totale.
+
+# Diagnostica del modello
+par(mfrow = c(2, 2))
+plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5)
+gam.check(gam_richness)
+
+#k-index: 1.08
+#p-value: 0.71
+#L'indice k è superiore a 1 e il p-value è alto (0.71), indicando che 
+#la dimensione della base k scelta è adeguata e non c'è necessità di aumentarla ulteriormente.
+
+# Previsione del modello GAM
 predict_richness <- data.frame(Altitude = veg_altitude, Predicted = predict(gam_richness, type = "response"))
 print(predict_richness)
 
-# Plot GAM per ricchezza delle specie
-gam_richness_plot <- ggplot(predict_richness, aes(x = Altitude, y = Predicted)) +
-  geom_line() +
-  labs(title = "GAM - Species Richness vs Altitude", x = "Altitude", y = "Species Richness")
-print(gam_richness_plot)
 
-# Previsione del modello GAM per la diversità di Shannon
-predict_shannon <- data.frame(Altitude = veg_altitude, Predicted = predict(gam_shannon, type = "response"))
-print(predict_shannon)
+#Il modello GAM suggerisce che l'altitudine ha un effetto non lineare sulla ricchezza delle specie. 
+#La ricchezza delle specie sembra aumentare fino a un certo punto con l'altitudine, 
+#raggiungendo un picco a altitudini intermedie, e poi diminuire a altitudini molto elevate. 
+#Questi risultati possono essere utilizzati per comprendere meglio come la variazione 
+#altitudinale influenzi la
 
-# Plot GAM per diversità di Shannon
-gam_shannon_plot <- ggplot(predict_shannon, aes(x = Altitude, y = Predicted)) +
-  geom_line() +
-  labs(title = "GAM - Shannon Diversity vs Altitude", x = "Altitude", y = "Shannon Diversity")
-print(gam_shannon_plot)
 
