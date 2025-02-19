@@ -67,17 +67,17 @@ lapply(required_packages, library, character.only = TRUE)
  - GAM visualization for interpreting biodiversity-environment relationships
 
 # 7. Vegetation and Lepidoptera Analysis
-# - Vegetation Gamma Diversity:
-#   - Observed and estimated species richness (Chao1 estimator)
-#   - GAM modeling of richness and Shannon index
-#   - Renyi diversity profile across altitudinal groups
-# - Lepidoptera Analysis:
-#   - Calculation of Lepidoptera species richness
-#   - Regression models for altitude and road distance influence
-#   - NMDS visualization of Lepidoptera community structure
-# - Vegetation-Lepidoptera Relationship:
-#   - Correlation analysis between vegetation diversity and Lepidoptera richness
-#   - GAM models assessing biodiversity interaction
+ - Vegetation Gamma Diversity:
+   - Observed and estimated species richness (Chao1 estimator)
+   - GAM modeling of richness and Shannon index
+   - Renyi diversity profile across altitudinal groups
+ - Lepidoptera Analysis:
+   - Calculation of Lepidoptera species richness
+   - Regression models for altitude and road distance influence
+   - NMDS visualization of Lepidoptera community structure
+ - Vegetation-Lepidoptera Relationship:
+   - Correlation analysis between vegetation diversity and Lepidoptera richness
+   - GAM models assessing biodiversity interaction
 
 ## Input Files
 
@@ -98,5 +98,5 @@ env_veg  <- read_excel(file_path, sheet = "env_veg_partial")
 lep_data <- read_excel(file_path, sheet = "spec_lep")
 env_lep  <- read_excel(file_path, sheet = "env_lep")
 
-# This script provides a comprehensive framework for biodiversity analysis in Armenia,
-# integrating ecological statistics, modeling, and visualization tools.
+ This script provides a comprehensive framework for biodiversity analysis in Armenia,
+ integrating ecological statistics, modeling, and visualization tools.
