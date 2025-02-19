@@ -2,10 +2,10 @@
 
 ## Vegetation and Lepidoptera Analysis
 
-# This project conducts a detailed analysis of vegetation and Lepidoptera species 
-# using various diversity indices, beta diversity partitioning, and Generalized Additive Models (GAMs). 
-# The environmental and species data are extracted from an Excel file, 
-# and multiple statistical analyses are performed to understand biodiversity patterns.
+ This project conducts a detailed analysis of vegetation and Lepidoptera species 
+ using various diversity indices, beta diversity partitioning, and Generalized Additive Models (GAMs). 
+ The environmental and species data are extracted from an Excel file, 
+ and multiple statistical analyses are performed to understand biodiversity patterns.
 
 ## Requirements
 
@@ -35,36 +35,36 @@ lapply(required_packages, library, character.only = TRUE)
 ## Analysis Workflow
 
 # 1. Alpha Diversity Analysis
-# - Calculation of Diversity Indices:
-#   - Shannon Index
-#   - Inverse Simpson Index
-#   - Species Richness
-#   - Total Abundance
-#   - Margalef and Menhinick indices
-#   - Absolute Effective Diversity (AED)
-# - Visualization: Boxplots of calculated indices
+ - Calculation of Diversity Indices:
+   - Shannon Index
+   - Inverse Simpson Index
+   - Species Richness
+   - Total Abundance
+   - Margalef and Menhinick indices
+   - Absolute Effective Diversity (AED)
+ - Visualization: Boxplots of calculated indices
 
 # 2. Renyi's Diversity Profile
-# - Computation of Renyi's diversity profile at different equitability scales
-# - Enhanced graphical representation
+ - Computation of Renyi's diversity profile at different equitability scales
+ - Enhanced graphical representation
 
 # 3. Non-metric Multidimensional Scaling (NMDS)
-# - Calculation of Bray-Curtis dissimilarity metric
-# - NMDS application for visualizing vegetation community structure
-# - Graphical representation with labeled sample points
+ - Calculation of Bray-Curtis dissimilarity metric
+ - NMDS application for visualizing vegetation community structure
+ - Graphical representation with labeled sample points
 
 # 4. Permutational Multivariate Analysis of Variance (PERMANOVA)
-# - Bray-Curtis PERMANOVA to test the influence of altitude on vegetation composition
-# - Jaccard PERMANOVA to assess significance in species composition differences
+ - Bray-Curtis PERMANOVA to test the influence of altitude on vegetation composition
+ - Jaccard PERMANOVA to assess significance in species composition differences
 
 # 5. Beta Diversity Analysis (betapart package)
-# - Calculation of beta diversity using Sorensen and Jaccard metrics
-# - Partitioning beta diversity into turnover and nestedness components
-# - Multi-site beta diversity estimation
+ - Calculation of beta diversity using Sorensen and Jaccard metrics
+ - Partitioning beta diversity into turnover and nestedness components
+ - Multi-site beta diversity estimation
 
 # 6. Generalized Additive Models (GAMs)
-# - Analysis of altitude’s influence on species richness and Shannon diversity
-# - GAM visualization for interpreting biodiversity-environment relationships
+ - Analysis of altitude’s influence on species richness and Shannon diversity
+ - GAM visualization for interpreting biodiversity-environment relationships
 
 # 7. Vegetation and Lepidoptera Analysis
 # - Vegetation Gamma Diversity:
