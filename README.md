@@ -1,55 +1,102 @@
 # Thesis_Armenia
-  ## Vegetation Analysis
-  Questo progetto esegue un'analisi dettagliata della vegetazione utilizzando diversi indici di diversità, profili di diversità e modelli additivi generalizzati (GAM). I dati sulla vegetazione e sull'ambiente vengono letti da un file Excel e vengono calcolati vari indici di diversità e componenti della diversità beta.
 
-  ## Requirements
-    R packages necessari per l'analisi:
-    -readxl – Per leggere i dati da file Excel
-    -vegan – Per calcolare gli indici di diversità e la diversità beta
-    -ggplot2 – Per creare grafici e visualizzazioni
-    -stats – Per eseguire analisi statistiche
-    -dplyr – Per manipolare i dati
-    -patchwork – Per unire i grafici
-    -adespatial – Per calcolare il profilo di diversità di Renyi
-    -betapart – Per calcolare la diversità beta e partizionare turnover/nestedness
-    -mgcv – Per costruire modelli additivi generalizzati (GAM)
-    -tidyr – Per trasformare i dati in formato long
-    -Analysis
-    
-  Il file di script analisi_vegetazione.R esegue le seguenti analisi:
-  ## 1. Calcolo degli Indici di Diversità:
-    -Indice di Shannon
-    -Indice di Simpson (Inverse Simpson)
-    -Ricchezza specifica
-    -Abbondanza totale
-    -Indice di Margalef
-    -Indice di Menhinick
-    -Average Evenness Diversity (AED)
-    -Viene inoltre creato un boxplot per visualizzare la distribuzione degli indici calcolati.
-	
- ## 2. Profilo di Diversità di Renyi:
- 	Calcolo del profilo di diversità di Renyi a diverse scale di equità
-	Visualizzazione del profilo di diversità con grafico migliorato
- 
- ## 3. Non-metric Multidimensional Scaling (NMDS):
- 	Calcolo della metrica di dissimilarità di Bray-Curtis	
-	Applicazione della tecnica NMDS per rappresentare la struttura della comunità vegetale
- 	Visualizzazione dei risultati in un grafico bidimensionale con etichette numeriche per i campioni
-	
- ## 4. Analisi della Varianza Permutazionale (PERMANOVA):
- 	PERMANOVA utilizzando l'indice di Bray-Curtis per testare l'influenza dell'altitudine sulla composizione della vegetazione
-	PERMANOVA utilizzando l'indice di Jaccard per valutare la significatività delle differenze nella composizione delle specie
- 
- ## 5. Analisi della Diversità Beta con il pacchetto betapart:
- 	Calcolo della diversità beta utilizzando le metriche di Sorensen e Jaccard
-	Partizionamento della diversità beta nelle componenti di turnover e nestedness
- 	Calcolo della diversità beta multi-sito per valutare il grado di differenziazione tra le comunità vegetali
-	
- ## 6. Modelli Additivi Generalizzati (GAM):
- 	Studio dell'influenza dell'altitudine sulla ricchezza delle specie e sulla diversità di Shannon
-	Visualizzazione dei risultati dei modelli GAM per interpretare meglio le relazioni tra variabili ambientali e biodiversità
- 
- ## File di Input
- 	I dati vengono caricati da un file Excel (Final_merged_file_Italian_and_Armenian_data.xlsx), che contiene:
-	-Foglio "spec_veg": Dati sulla vegetazione (composizione delle specie)
- 	-Foglio "env_veg_partial": Dati ambientali (altitudine, esposizione, distanza dalle strade, ecc.)
+## Vegetation and Lepidoptera Analysis
+
+# This project conducts a detailed analysis of vegetation and Lepidoptera species 
+# using various diversity indices, beta diversity partitioning, and Generalized Additive Models (GAMs). 
+# The environmental and species data are extracted from an Excel file, 
+# and multiple statistical analyses are performed to understand biodiversity patterns.
+
+## Requirements
+
+# R packages necessary for the analysis:
+required_packages <- c(
+  "readxl",    # For reading data from Excel files
+  "vegan",     # For calculating diversity indices and beta diversity
+  "ggplot2",   # For creating graphs and visualizations
+  "stats",     # For performing statistical analyses
+  "dplyr",     # For data manipulation
+  "patchwork", # For combining plots
+  "adespatial",# For calculating Renyi's diversity profile
+  "betapart",  # For computing beta diversity and partitioning turnover/nestedness
+  "mgcv",      # For building Generalized Additive Models (GAMs)
+  "tidyr",     # For transforming data into long format
+  "ggdendro"   # For creating dendrograms with ggplot2
+)
+
+# Install missing packages
+installed_packages <- rownames(installed.packages())
+missing_packages <- setdiff(required_packages, installed_packages)
+if(length(missing_packages)) install.packages(missing_packages)
+
+# Load libraries
+lapply(required_packages, library, character.only = TRUE)
+
+## Analysis Workflow
+
+# 1. Alpha Diversity Analysis
+# - Calculation of Diversity Indices:
+#   - Shannon Index
+#   - Inverse Simpson Index
+#   - Species Richness
+#   - Total Abundance
+#   - Margalef and Menhinick indices
+#   - Absolute Effective Diversity (AED)
+# - Visualization: Boxplots of calculated indices
+
+# 2. Renyi's Diversity Profile
+# - Computation of Renyi's diversity profile at different equitability scales
+# - Enhanced graphical representation
+
+# 3. Non-metric Multidimensional Scaling (NMDS)
+# - Calculation of Bray-Curtis dissimilarity metric
+# - NMDS application for visualizing vegetation community structure
+# - Graphical representation with labeled sample points
+
+# 4. Permutational Multivariate Analysis of Variance (PERMANOVA)
+# - Bray-Curtis PERMANOVA to test the influence of altitude on vegetation composition
+# - Jaccard PERMANOVA to assess significance in species composition differences
+
+# 5. Beta Diversity Analysis (betapart package)
+# - Calculation of beta diversity using Sorensen and Jaccard metrics
+# - Partitioning beta diversity into turnover and nestedness components
+# - Multi-site beta diversity estimation
+
+# 6. Generalized Additive Models (GAMs)
+# - Analysis of altitude’s influence on species richness and Shannon diversity
+# - GAM visualization for interpreting biodiversity-environment relationships
+
+# 7. Vegetation and Lepidoptera Analysis
+# - Vegetation Gamma Diversity:
+#   - Observed and estimated species richness (Chao1 estimator)
+#   - GAM modeling of richness and Shannon index
+#   - Renyi diversity profile across altitudinal groups
+# - Lepidoptera Analysis:
+#   - Calculation of Lepidoptera species richness
+#   - Regression models for altitude and road distance influence
+#   - NMDS visualization of Lepidoptera community structure
+# - Vegetation-Lepidoptera Relationship:
+#   - Correlation analysis between vegetation diversity and Lepidoptera richness
+#   - GAM models assessing biodiversity interaction
+
+## Input Files
+
+# Data is loaded from an Excel file
+file_path <- "Final_merged_file_Italian_and_Armenian_data.xlsx"
+
+# Sheets in the Excel file:
+sheets <- list(
+  spec_veg = "Vegetation composition data",
+  env_veg_partial = "Environmental data (altitude, road distance, etc.)",
+  spec_lep = "Lepidoptera composition data",
+  env_lep = "Environmental data for Lepidoptera analysis"
+)
+
+# Read data
+veg_data <- read_excel(file_path, sheet = "spec_veg")
+env_veg  <- read_excel(file_path, sheet = "env_veg_partial")
+lep_data <- read_excel(file_path, sheet = "spec_lep")
+env_lep  <- read_excel(file_path, sheet = "env_lep")
+
+# This script provides a comprehensive framework for biodiversity analysis in Armenia,
+# integrating ecological statistics, modeling, and visualization tools.
