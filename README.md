@@ -1,5 +1,4 @@
-# Script_Armenia - Analisi di Alfa, Beta, Gamma Diversità e Lepidotteri
-
+# Script_Armenia - Analisi di Alfa, Beta, Gamma Diversità
 ## Descrizione
 Questo progetto effettua un'analisi approfondita sulla diversità di specie vegetali e Lepidotteri in Armenia. Utilizza vari indici di diversità, decomposizione della diversità beta e modelli additivi generalizzati (GAM) per studiare i pattern di biodiversità.
 
