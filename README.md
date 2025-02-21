@@ -18,7 +18,7 @@ required_packages:
 -  "mgcv",         # Costruzione di modelli additivi generalizzati (GAM)
 -  "tidyr",        # Trasformazione dei dati in formato lungo
 -  "ggdendro",     # Creazione di dendrogrammi
--  "indicspecies"  # (Opzionale) Analisi di specie indicatrici
+-  "indicspecies"  # Analisi di specie indicatrici
 
 ## Installazione automatica dei pacchetti mancanti
 installed_packages <- rownames(installed.packages())
