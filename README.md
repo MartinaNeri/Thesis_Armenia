@@ -6,20 +6,19 @@ Questo progetto effettua un'analisi approfondita sulla diversità di specie vege
 ## Requisiti
 
 ### Pacchetti R richiesti:
-required_packages <- c(
-  "readxl",       # Lettura di file Excel
-  "vegan",        # Calcolo di indici di diversità e beta diversità
-  "ggplot2",      # Creazione di grafici e visualizzazioni
-  "stats",        # Funzioni statistiche di base
-  "dplyr",        # Manipolazione dei dati
-  "patchwork",    # Combinazione di grafici
-  "adespatial",   # Analisi spaziali e profili di diversità di Rényi
-  "betapart",     # Calcolo e partizionamento della diversità beta
-  "mgcv",         # Costruzione di modelli additivi generalizzati (GAM)
-  "tidyr",        # Trasformazione dei dati in formato lungo
-  "ggdendro",     # Creazione di dendrogrammi
-  "indicspecies"  # (Opzionale) Analisi di specie indicatrici
-)
+required_packages:
+-  "readxl",       # Lettura di file Excel
+-  "vegan",        # Calcolo di indici di diversità e beta diversità
+-  "ggplot2",      # Creazione di grafici e visualizzazioni
+-  "stats",        # Funzioni statistiche di base
+-  "dplyr",        # Manipolazione dei dati
+-  "patchwork",    # Combinazione di grafici
+-  "adespatial",   # Analisi spaziali e profili di diversità di Rényi
+-  "betapart",     # Calcolo e partizionamento della diversità beta
+-  "mgcv",         # Costruzione di modelli additivi generalizzati (GAM)
+-  "tidyr",        # Trasformazione dei dati in formato lungo
+-  "ggdendro",     # Creazione di dendrogrammi
+-  "indicspecies"  # (Opzionale) Analisi di specie indicatrici
 
 ## Installazione automatica dei pacchetti mancanti
 installed_packages <- rownames(installed.packages())
