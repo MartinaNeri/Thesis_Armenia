@@ -128,33 +128,33 @@ summary(gam_aed)
 p1 <- ggplot(env_index_subplot, aes(x = Altitude, y = Shannon)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "1.4.1 Shannon Index vs Altitude", x = "Altitude (m)", y = "Shannon Index")
+  labs(title = "Shannon Index vs Altitude", x = "Altitude (m)", y = "Shannon Index")
 p2 <- ggplot(env_index_subplot, aes(x = Altitude, y = Simpson)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "1.4.2 Simpson Index vs Altitude", x = "Altitude (m)", y = "Simpson Index")
+  labs(title = "Simpson Index vs Altitude", x = "Altitude (m)", y = "Simpson Index")
 p3 <- ggplot(env_index_subplot, aes(x = Altitude, y = AED)) +
   geom_point(color = 'purple') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'pink') +
-  labs(title = "1.4.3 AED vs Altitude", x = "Altitude (m)", y = "AED")
+  labs(title = "AED vs Altitude", x = "Altitude (m)", y = "AED")
 ######### 3.4.2 Grafici in funzione della Distanza dalle Strade #########
 p4 <- ggplot(env_index_subplot, aes(x = Distance, y = Shannon)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "1.4.4 Shannon Index vs Distance", x = "Distance (m)", y = "Shannon Index")
+  labs(title = "Shannon Index vs Distance", x = "Distance (m)", y = "Shannon Index")
 p5 <- ggplot(env_index_subplot, aes(x = Distance, y = Simpson)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "1.4.5 Simpson Index vs Distance", x = "Distance (m)", y = "Simpson Index")
+  labs(title = "Simpson Index vs Distance", x = "Distance (m)", y = "Simpson Index")
 p6 <- ggplot(env_index_subplot, aes(x = Distance, y = AED)) +
   geom_point(color = 'purple') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'pink') +
-  labs(title = "1.4.6 AED vs Distance", x = "Distance (m)", y = "AED")
+  labs(title = "AED vs Distance", x = "Distance (m)", y = "AED")
 # Visualizzazione combinata
 (p1 | p2 | p3) / (p4 | p5 | p6)
 
 
-######### 3.3.3 aliene e autoctone #########
+###### 3.5 aliene e autoctone ######
 # Calcolo indici di diversità per specie aliene e autoctone
 shannon_aliene <- diversity(abb_aliene_t, index = "shannon")
 simpson_aliene <- diversity(abb_aliene_t, index = "invsimpson")
@@ -179,7 +179,7 @@ any(is.na(diversity_df$Richness_Autoctone))
 # Rimuovi eventuali NA
 diversity_df <- na.omit(diversity_df)
 
-#### 3. Analisi Statistica ####
+######### 3.5.1 Analisi Statistica e grafici #########
 # Modelli GAM
 # Specie aliene
 gam_shannon_aliene <- gam(Shannon_Aliene ~ s(Altitude) + s(Distance), data = diversity_df)
@@ -203,7 +203,7 @@ print(shannon_ttest)
 print(simpson_ttest)
 
 
-#### 4. Visualizzazione Grafica ####
+# Visualizzazione Grafica 
 # Grafici per aliene
 paa1 <- ggplot(diversity_df, aes(x = Altitude, y = Shannon_Aliene)) +
   geom_point(color = 'blue') +
@@ -234,10 +234,13 @@ beta_turnover   <- beta_pair$beta.sim      # Turnover (sostituzione specie)
 beta_nestedness <- beta_pair$beta.sne      # Nestedness (perdita/guadagno specie)
 beta_total      <- beta_pair$beta.sor      # Dissimilarità totale
 beta_multi_sorensen <- beta.multi(veg_matrix_subplot_pa, index.family = "sorensen")
+print(beta_multi_sorensen)
 
 ###### 4.3 Analisi PERMANOVA ###### 
 permanova_bray_beta   <- adonis2(veg_matrix_plot_t ~ veg_altitude_plot, method = "bray")
+print(permanova_bray_beta)
 permanova_jaccard_beta<- adonis2(veg_matrix_plot_pa ~ veg_altitude_plot, method = "jaccard")
+print(permanova_jaccard_beta)
 
 ## 4.4 NMDS per Visualizzare le Differenze nella Composizione delle Comunità
 nmds_beta <- metaMDS(veg_bray_beta, k = 2, trymax = 100)
@@ -327,7 +330,9 @@ summary(gam(Beta_Diversity ~ Street_Distance_Diff, data = beta_bray_long_clean))
 
 ## 4.8 Analisi Specie Endemiche/Autoctone (Opzionale)
 gam_shannon_aliene    <- gam(diversity(abb_aliene_t, index = "shannon") ~ Altitude + Distance, data = endem_df, family = gaussian())
+print(summary(gam_shannon_aliene))
 gam_shannon_autoctone <- gam(diversity(abb_autoctone_t, index = "shannon") ~ Altitude + Distance, data = endem_df, family = gaussian())
+print(summary(gam_shannon_autoctone))
 
 p_aliene <- ggplot(endem_df, aes(x = Altitude, y = diversity(abb_aliene_t, index = "shannon"))) +
   geom_point(color = 'darkgreen') +
