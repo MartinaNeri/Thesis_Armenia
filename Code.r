@@ -73,8 +73,6 @@ shannon_diversity_subplot <- diversity(veg_matrix_subplot_t, index = "shannon")
 simpson_diversity_subplot <- diversity(veg_matrix_subplot_t, index = "invsimpson")
 veg_richness_subplot      <- colSums(veg_matrix_subplot > 0)
 total_abundance_subplot   <- colSums(veg_matrix_subplot)
-margalef_subplot          <- (veg_richness_subplot - 1) / log(total_abundance_subplot)
-menhinick_subplot         <- veg_richness_subplot / sqrt(total_abundance_subplot)
 H0_subplot <- veg_richness_subplot         # Numero di specie
 H1_subplot <- exp(shannon_diversity_subplot)  # Diversità effettiva (trasformazione di Shannon)
 H2_subplot <- simpson_diversity_subplot       # Simpson (inverso)
@@ -249,7 +247,7 @@ nmds_scores_beta$Sample <- rownames(nmds_scores_beta)
 nmds_plot_beta <- ggplot(nmds_scores_beta, aes(x = NMDS1, y = NMDS2, label = Sample)) +
   geom_point(size = 3) +
   geom_text(vjust = -0.5, hjust = 0.5) +
-  labs(title = "NMDS: Composizione delle Comunità", x = "NMDS1", y = "NMDS2") +
+  labs(title = "2.4 NMDS: Composizione delle Comunità", x = "NMDS1", y = "NMDS2") +
   theme_minimal()
 print(nmds_plot_beta)
 
@@ -261,7 +259,7 @@ bray_altitude_df <- data.frame(
 plot_br_alt <- ggplot(bray_altitude_df, aes(x = Altitude, y = Dissimilarity)) +
   geom_point(size = 3, color = "blue") +
   geom_smooth(method = "gam", se = TRUE, color = "black") +
-  labs(title = "Altitudine vs Dissimilarità (Bray-Curtis)",
+  labs(title = "2.5 Altitudine vs Dissimilarità (Bray-Curtis)",
        x = "Altitude", y = "Dissimilarità Media") +
   theme_minimal()
 print(plot_br_alt)
@@ -271,7 +269,7 @@ summary(gam(Dissimilarity ~ Altitude, data = bray_altitude_df))
 bray_clustering_beta <- hclust(veg_bray_beta, method = "average")
 dendro_data_beta <- as.dendrogram(bray_clustering_beta)
 dendro_plot_beta <- ggdendrogram(dendro_data_beta, theme_dendro = FALSE) +
-  ggtitle("Dendrogramma: Bray-Curtis") +
+  ggtitle("2.6 Dendrogramma: Bray-Curtis") +
   theme_minimal()
 print(dendro_plot_beta)
 
@@ -311,7 +309,7 @@ beta_bray_long_clean <- beta_bray_long %>%
 plot_altitude_beta <- ggplot(beta_bray_long_clean, aes(x = Altitude_Diff, y = Beta_Diversity)) +
   geom_point(alpha = 0.5, color = "blue") +
   geom_smooth(method = "gam", se = TRUE, color = "black") +
-  labs(title = "Differenza di Altitudine vs Beta Diversità",
+  labs(title = "2.7 Differenza di Altitudine vs Beta Diversità",
        x = "Differenza di Altitudine",
        y = "Beta Diversità (Bray-Curtis)") +
   theme_minimal()
@@ -321,7 +319,7 @@ summary(gam(Beta_Diversity ~ Altitude_Diff, data = beta_bray_long_clean))
 plot_street_beta <- ggplot(beta_bray_long_clean, aes(x = Street_Distance_Diff, y = Beta_Diversity)) +
   geom_point(alpha = 0.5, color = "red") +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
-  labs(title = "Differenza di Distanza vs Beta Diversità",
+  labs(title = "2.7 Differenza di Distanza vs Beta Diversità",
        x = "Differenza di Distanza",
        y = "Beta Diversità (Bray-Curtis)") +
   theme_minimal()
@@ -337,11 +335,11 @@ print(summary(gam_shannon_autoctone))
 p_aliene <- ggplot(endem_df, aes(x = Altitude, y = diversity(abb_aliene_t, index = "shannon"))) +
   geom_point(color = 'darkgreen') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'green') +
-  labs(title = "Specie Aliene: Shannon vs Altitude", x = "Altitude (m)", y = "Shannon Index")
+  labs(title = "2.8 Specie Aliene: Shannon vs Altitude", x = "Altitude (m)", y = "Shannon Index")
 p_autoctone <- ggplot(endem_df, aes(x = Altitude, y = diversity(abb_autoctone_t, index = "shannon"))) +
   geom_point(color = 'darkblue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'blue') +
-  labs(title = "Specie Autoctone: Shannon vs Altitude", x = "Altitude (m)", y = "Shannon Index")
+  labs(title = "2.8 Specie Autoctone: Shannon vs Altitude", x = "Altitude (m)", y = "Shannon Index")
 p_aliene + p_autoctone
 
 #### 5. DIVERSITÀ GAMMA E ANALISI DEI LEPIDOTTERI ####
@@ -359,13 +357,13 @@ gam_richness <- gam(Richness ~ s(Altitude, k = 30) + s(Distance), data = env_ind
 cat("Risultati GAM per Richness:\n")
 print(summary(gam_richness))
 plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Richness ~ s(Altitude, k=30) + s(Distance)")
+     main = "3.2 GAM: Richness ~ s(Altitude, k=30) + s(Distance)")
 #########  5.2.2 GAM per lo Shannon Index #########
 gam_shannon_gamma <- gam(Shannon ~ s(Altitude) + s(Distance), data = env_index_subplot)
 cat("Risultati GAM per Shannon (Gamma):\n")
 print(summary(gam_shannon_gamma))
 plot(gam_shannon_gamma, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Shannon ~ s(Altitude) + s(Distance)")
+     main = "3.2 GAM: Shannon ~ s(Altitude) + s(Distance)")
 
 ###### 5.3 Profili di Diversità di Rényi ###### 
 renyi_profile <- renyi(veg_matrix_subplot_t, scales = c(0, 0.5, 1, 1.5, 2, 2.5, 3, Inf))
@@ -378,7 +376,7 @@ renyi_df <- renyi_df %>% filter(!is.na(as.numeric(scale))) %>% mutate(scale = as
 renyi_plot <- ggplot(renyi_df, aes(x = scale, y = diversity, group = Sample, color = Sample)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
-  labs(title = "Profili di Rényi (tutti i subplot)",
+  labs(title = "3.3 Profili di Rényi (tutti i subplot)",
        x = "Scale parameter (α)",
        y = "Diversity") +
   theme_minimal() +
@@ -409,7 +407,7 @@ renyi_group_plot <- ggplot(renyi_group_df, aes(x = scale, y = diversity,
                                                color = Group, group = interaction(Sample, Group))) +
   geom_line(alpha = 0.5) +
   geom_point() +
-  labs(title = "Profili di Rényi per Gruppo di Altitudine",
+  labs(title = "3.3 Profili di Rényi per Gruppo di Altitudine",
        x = "Scale parameter (α)",
        y = "Diversity") +
   theme_minimal()
@@ -420,7 +418,7 @@ print(renyi_group_plot)
 lep_alt_plot <- ggplot(lep_df, aes(x = Altitude, y = Richness)) +
   geom_point(color = "slateblue1") +
   geom_smooth(method = "gam", se = FALSE, color = "slateblue3") +
-  labs(title = "Lepidoptera Richness vs Altitude",
+  labs(title = "3.4.1 Lepidoptera Richness vs Altitude",
        x = "Altitude (m)", y = "Species Richness") +
   theme_minimal()
 print(lep_alt_plot)
@@ -432,7 +430,7 @@ print(summary(leprich_alt))
 lep_dist_plot <- ggplot(lep_df, aes(x = Distance, y = Richness)) +
   geom_point(color = "orange1") +
   geom_smooth(method = "gam", se = FALSE, color = "orange3") +
-  labs(title = "Lepidoptera Richness vs Distance",
+  labs(title = "3.4.3 Lepidoptera Richness vs Distance",
        x = "Distance (m)", y = "Species Richness") +
   theme_minimal()
 print(lep_dist_plot)
@@ -447,8 +445,6 @@ shannon_diversity_plot <- diversity(veg_matrix_plot_t, index = "shannon")
 simpson_diversity_plot <- diversity(veg_matrix_plot_t, index = "invsimpson")
 veg_richness_plot      <- colSums(veg_matrix_plot > 0)
 total_abundance_plot   <- colSums(veg_matrix_plot_t)
-margalef_plot          <- (veg_richness_plot - 1) / log(total_abundance_plot)
-menhinick_plot         <- veg_richness_plot / sqrt(total_abundance_plot)
 H0_plot <- veg_richness_plot         
 H1_plot <- exp(shannon_diversity_plot) 
 H2_plot <- simpson_diversity_plot     
@@ -464,3 +460,4 @@ print(summary(veg_lep_lm))
 cor_aed_lep <- cor.test(aed_plot, lep_richness_plot, method = "spearman", exact = FALSE)
 cat("Correlazione Spearman tra AED e Lepidoptera Richness:\n")
 print(cor_aed_lep)
+
