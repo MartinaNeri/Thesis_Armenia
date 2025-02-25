@@ -194,23 +194,23 @@ diversity_df <- na.omit(diversity_df)
 summary(diversity_df$Simpson_Aliene)
 
 ###### 3.5.1 Analisi statistica e grafica per specie aliene e autoctone ######
-# Modelli GAM per specie aliene
-gam_shannon_aliene <- gam(Shannon_Aliene ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = diversity_df)
-gam_simpson_aliene <- gam(Simpson_Aliene ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = diversity_df)
-# Modelli GAM per specie autoctone
-gam_shannon_autoctone <- gam(Shannon_Autoctone ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = diversity_df)
-gam_simpson_autoctone <- gam(Simpson_Autoctone ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = diversity_df)
 
+# Modellizzazione GAM per specie aliene e autoctone
+#Shannon
+gam_shannon_aliene    <- gam(diversity(abb_aliene_t, index = "shannon") ~ Altitude + Distance + Human_Settlement_Distance, 
+                             data = env_index_subplot, family = gaussian())
 print(summary(gam_shannon_aliene))
-print(summary(gam_simpson_aliene))
+gam_shannon_autoctone <- gam(diversity(abb_autoctone_t, index = "shannon") ~ Altitude + Distance + Human_Settlement_Distance, 
+                             data = env_index_subplot, family = gaussian())
 print(summary(gam_shannon_autoctone))
-print(summary(gam_simpson_autoctone))
 
-# Test t per il confronto tra specie aliene e autoctone
-shannon_ttest <- t.test(diversity_df$Shannon_Aliene, diversity_df$Shannon_Autoctone)
-simpson_ttest <- t.test(diversity_df$Simpson_Aliene, diversity_df$Simpson_Autoctone)
-print(shannon_ttest)
-print(simpson_ttest)
+#Simpson
+gam_simpson_aliene    <- gam(diversity(abb_aliene_t, index = "simpson") ~ Altitude + Distance + Human_Settlement_Distance, 
+                             data = env_index_subplot, family = gaussian())
+print(summary(gam_simpson_aliene))
+gam_simpson_autoctone <- gam(diversity(abb_autoctone_t, index = "simpson") ~ Altitude + Distance + Human_Settlement_Distance, 
+                             data = env_index_subplot, family = gaussian())
+print(summary(gam_simpson_autoctone))
 
 # Grafici per specie aliene
 paa1 <- ggplot(diversity_df, aes(x = Altitude, y = Shannon_Aliene)) +
@@ -255,6 +255,8 @@ dev.off()
 veg_bray_beta <- vegdist(veg_matrix_plot_t, method = "bray")
 dissim_sorensen <- vegdist(veg_matrix_subplot_pa, method = "bray", binary = TRUE)
 dissim_jaccard   <- vegdist(veg_matrix_subplot_pa, method = "jaccard")
+
+print(dissim_sorensen)
 
 ##### 4.2 Decomposizione della diversità beta #####
 beta_pair       <- beta.pair(veg_matrix_subplot_pa, index.family = "sorensen")
@@ -317,7 +319,7 @@ beta_bray_long <- beta_bray_df %>%
   pivot_longer(cols = -Site1, names_to = "Site2", values_to = "Beta_Diversity") %>%
   filter(Site1 != Site2)
 
-# Assegnazione dei nomi dei siti (si assume che la prima colonna di veg_plot contenga i nomi)
+# Assegnazione dei nomi dei siti
 site_names <- veg_plot[[1]]
 rownames(veg_matrix_plot) <- site_names
 colnames(veg_matrix_plot_t) <- site_names
@@ -380,37 +382,13 @@ print(plot_hs_beta)
 dev.off()
 summary(gam(Beta_Diversity ~ Human_Settlement_Distance_Diff, data = beta_bray_long_clean))
 
-## 4.8 Analisi delle specie endemiche/autoctone (opzionale)
-if (!"Human_Settlement_Distance" %in% colnames(env_index_subplot)) {
-  stop("La variabile 'Human_Settlement_Distance' non è presente nel dataframe 'endem_df'")
-}
-
-# Modellizzazione GAM per specie aliene e autoctone
-gam_shannon_aliene    <- gam(diversity(abb_aliene_t, index = "shannon") ~ Altitude + Distance + Human_Settlement_Distance, 
-                             data = env_index_subplot, family = gaussian())
-print(summary(gam_shannon_aliene))
-gam_shannon_autoctone <- gam(diversity(abb_autoctone_t, index = "shannon") ~ Altitude + Distance + Human_Settlement_Distance, 
-                             data = env_index_subplot, family = gaussian())
-print(summary(gam_shannon_autoctone))
-
-# Creazione dei grafici relativi alle specie aliene e autoctone
-p_aliene <- ggplot(endem_df, aes(x = Altitude, y = diversity(abb_aliene_t, index = "shannon"))) +
-  geom_point(color = 'darkgreen') +
-  stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'green') +
-  labs(title = "Specie Aliene: Shannon vs Altitude", x = "Altitude (m)", y = "Indice di Shannon")
-
-p_autoctone <- ggplot(endem_df, aes(x = Altitude, y = diversity(abb_autoctone_t, index = "shannon"))) +
-  geom_point(color = 'darkblue') +
-  stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'blue') +
-  labs(title = "Specie Autoctone: Shannon vs Altitude", x = "Altitude (m)", y = "Indice di Shannon")
-
-combined_endem <- p_aliene + p_autoctone
-png("combined_endem.png", width = 10*300, height = 5*300, res = 300)
-print(combined_endem)
+#stampo in png tutti e tre i grafici insieme
+combined_beta <- plot_altitude_beta + plot_street_beta + plot_hs_beta
+png("combined_beta.png", width = 10*300, height = 5*300, res = 300)
+print(combined_beta)
 dev.off()
 
 #### 5. Diversità Gamma e analisi dei lepidotteri ####
-
 ##### 5.1 Stima della diversità gamma #####
 gamma_diversity_obs <- sum(rowSums(veg_matrix_subplot > 0) > 0)
 cat("Gamma diversity osservata:", gamma_diversity_obs, "\n")
@@ -459,13 +437,25 @@ png("renyi_plot.png", width = 10*300, height = 8*300, res = 300)
 print(renyi_plot)
 dev.off()
 
-alt_breaks <- quantile(veg_altitude_plot, probs = c(0, 0.33, 0.66, 1))
-plot_groups <- cut(veg_altitude_subplot, breaks = alt_breaks,
-                      include.lowest = TRUE, labels = c("Low", "Medium", "High"))
-renyi_profiles_group <- lapply(split(1:length(plot_groups), plot_groups), function(idx) {
-  mat_group <- veg_matrix_plot_t[idx, ]
-  renyi(mat_group, scales = c(0, 0.5, 1, 1.5, 2, 2.5, 3, Inf))
+# Raggruppamento per Altitudine e Confronto dei Profili
+alt_breaks <- quantile(veg_altitude_plot, probs = c(0, 0.33, 0.66, 1), na.rm = TRUE)
+plot_groups <- cut(veg_altitude_plot, breaks = alt_breaks, include.lowest = TRUE, labels = c("Low", "Medium", "High"))
+
+# Verifica che gli indici siano validi prima di accedere alla matrice
+renyi_profiles_group <- lapply(split(1:nrow(veg_matrix_plot_t), plot_groups), function(idx) {
+  if (all(idx <= nrow(veg_matrix_plot_t))) {
+    mat_group <- veg_matrix_plot_t[idx, , drop = FALSE]
+    return(renyi(mat_group, scales = c(0, 0.5, 1, 1.5, 2, 2.5, 3, Inf)))
+  } else {
+    warning("Indici fuori limite, gruppo saltato")
+    return(NULL)
+  }
 })
+
+# Rimuovi gruppi nulli
+renyi_profiles_group <- Filter(Negate(is.null), renyi_profiles_group)
+
+# Creazione del dataframe per i profili di Renyi
 renyi_group_list <- lapply(names(renyi_profiles_group), function(group) {
   rp <- as.data.frame(renyi_profiles_group[[group]])
   rp$Sample <- rownames(rp)
@@ -474,14 +464,12 @@ renyi_group_list <- lapply(names(renyi_profiles_group), function(group) {
   rp$Group <- group
   return(rp)
 })
+
 renyi_group_df <- do.call(rbind, renyi_group_list)
-renyi_group_plot <- ggplot(renyi_group_df, aes(x = scale, y = diversity,
-                                               color = Group, group = interaction(Sample, Group))) +
+renyi_group_plot <- ggplot(renyi_group_df, aes(x = scale, y = diversity, color = Group, group = interaction(Sample, Group))) +
   geom_line(alpha = 0.5) +
   geom_point() +
-  labs(title = "Profili di Rényi per Gruppo di Altitudine",
-       x = "Scale parameter (α)",
-       y = "Diversity") +
+  labs(title = "Profili di Rényi per Gruppo di Altitudine", x = "Scale parameter (α)", y = "Diversity") +
   theme_minimal()
 png("renyi_group_plot.png", width = 10*300, height = 8*300, res = 300)
 print(renyi_group_plot)
@@ -529,6 +517,13 @@ dev.off()
 leprich_hs <- gam(Richness ~ H_S_Distance, data = lep_df)
 cat("Risultati GAM per Lepidotteri (Richness ~ Human Settlement Distance):\n")
 print(summary(leprich_hs))
+
+# Combinazione dei grafici
+combined_lep <- lep_alt_plot + lep_dist_plot + lep_hs_plot
+png("combined_lep.png", width = 10*300, height = 5*300, res = 300)
+print(combined_lep)
+dev.off()
+
 
 ##### 5.5 Relazione tra vegetazione e lepidotteri #####
 shannon_diversity_plot <- diversity(veg_matrix_plot_t, index = "shannon")
