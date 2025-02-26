@@ -13,6 +13,7 @@ library(mgcv)         # Modelli additivi generalizzati (GAM)
 library(tidyr)        # Trasformazione dei dati in formato long
 library(ggdendro)     # Creazione di dendrogrammi
 library(indicspecies) # Analisi delle specie indicatrici (opzionale)
+library(ggrepel)      # Etichettatura dei punti nei grafici
 
 # Impostazione della directory di lavoro
 setwd("C:/Users/Martina/Desktop/Tesi")
@@ -122,49 +123,49 @@ summary(gam_aed)
 p1 <- ggplot(env_index_subplot, aes(x = Altitude, y = Shannon)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "a. Shannon vs Altitude", x = "Altitude (m)", y = "Indice di Shannon")
+  labs(title = "a. Shannon vs Altitudine", x = "Altitudine (m)", y = "Indice di Shannon")
 
 p2 <- ggplot(env_index_subplot, aes(x = Altitude, y = Simpson)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "b. Simpson vs Altitude", x = "Altitude (m)", y = "Indice di Simpson")
+  labs(title = "b. Simpson vs Altitudine", x = "Altitudine (m)", y = "Indice di Simpson")
 
 p3 <- ggplot(env_index_subplot, aes(x = Altitude, y = AED)) +
   geom_point(color = 'purple') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'pink') +
-  labs(title = "c. AED vs Altitude", x = "Altitude (m)", y = "AED")
+  labs(title = "c. AED vs Altitudine", x = "Altitudine (m)", y = "AED")
 
-###### 3.4.2 Grafici in funzione della distanza dalle strade ######
+###### 3.4.2 Grafici in funzione della Dist. dalle strade ######
 p4 <- ggplot(env_index_subplot, aes(x = Distance, y = Shannon)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "d. Shannon vs Distance", x = "Distance (m)", y = "Indice di Shannon")
+  labs(title = "d. Shannon vs Dist. dalla strada", x = "Distanza (m)", y = "Indice di Shannon")
 
 p5 <- ggplot(env_index_subplot, aes(x = Distance, y = Simpson)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "e. Simpson vs Distance", x = "Distance (m)", y = "Indice di Simpson")
+  labs(title = "e. Simpson vs Dist. dalla strada", x = "Distanza (m)", y = "Indice di Simpson")
 
 p6 <- ggplot(env_index_subplot, aes(x = Distance, y = AED)) +
   geom_point(color = 'purple') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'pink') +
-  labs(title = "f. AED vs Distance", x = "Distance (m)", y = "AED")
+  labs(title = "f. AED vs Dist. dalla strada", x = "Distance (m)", y = "AED")
 
 ###### 3.4.3 Grafici in funzione della distanza dagli insediamenti umani ######
 p7 <- ggplot(env_index_subplot, aes(x = Human_Settlement_Distance, y = Shannon)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "g. Shannon vs Human Settlement Distance", x = "Distance (m)", y = "Indice di Shannon")
+  labs(title = "g. Shannon vs Dist. dagli insediamenti", x = "Distanza (m)", y = "Indice di Shannon")
 
 p8 <- ggplot(env_index_subplot, aes(x = Human_Settlement_Distance, y = Simpson)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "h. Simpson vs Human Settlement Distance", x = "Distance (m)", y = "Indice di Simpson")
+  labs(title = "h. Simpson vs Dist. dagli insediamenti", x = "Distanza (m)", y = "Indice di Simpson")
 
 p9 <- ggplot(env_index_subplot, aes(x = Human_Settlement_Distance, y = AED)) +
-  geom_point(color = 'Purple') +
+  geom_point(color = 'purple') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'pink') +
-  labs(title = "i. AED vs Human Settlement Distance", x = "Distance (m)", y = "AED")
+  labs(title = "i. AED vs Dist. dagli insediamenti", x = "Distanza (m)", y = "AED")
 
 # Combinazione dei grafici mediante patchwork
 combined_alpha <- (p1 | p2 | p3) / (p4 | p5 | p6) / (p7 | p8 | p9)
@@ -216,36 +217,36 @@ print(summary(gam_simpson_autoctone))
 paa1 <- ggplot(diversity_df, aes(x = Altitude, y = Shannon_Aliene)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "Shannon Aliene vs Altitudine", x = "Altitudine (m)", y = "Indice di Shannon")
+  labs(title = "a. Shannon Al. vs Altitudine", x = "Altitudine (m)", y = "Indice di Shannon")
 
 paa2 <- ggplot(diversity_df, aes(x = Distance, y = Shannon_Aliene)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "Shannon Aliene vs Distanza dalle Strade", x = "Distanza (m)", y = "Indice di Shannon")
+  labs(title = "b. Shannon Al. vs Dist. dalle strade", x = "Distanza (m)", y = "Indice di Shannon")
 
 paa3 <- ggplot(diversity_df, aes(x = Human_Settlement_Distance, y = Shannon_Aliene)) +
   geom_point(color = 'green') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkgreen') +
-  labs(title = "Shannon Aliene vs Distanza dagli Insediamenti Umani", x = "Distanza (m)", y = "Indice di Shannon")
+  labs(title = "c. Shannon Al. vs Dist. Insediamenti", x = "Distanza (m)", y = "Indice di Shannon")
 
 # Grafici per specie autoctone
 paa4 <- ggplot(diversity_df, aes(x = Altitude, y = Shannon_Autoctone)) +
   geom_point(color = 'blue') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkblue') +
-  labs(title = "Shannon Autoctone vs Altitudine", x = "Altitudine (m)", y = "Indice di Shannon")
+  labs(title = "d. Shannon Aut. vs Altitudine", x = "Altitudine (m)", y = "Indice di Shannon")
 
 paa5 <- ggplot(diversity_df, aes(x = Distance, y = Shannon_Autoctone)) +
   geom_point(color = 'red') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkred') +
-  labs(title = "Shannon Autoctone vs Distanza dalle Strade", x = "Distanza (m)", y = "Indice di Shannon")
+  labs(title = "e. Shannon Aut. vs Dist. dalla strada", x = "Distanza (m)", y = "Indice di Shannon")
 
 paa6 <- ggplot(diversity_df, aes(x = Human_Settlement_Distance, y = Shannon_Autoctone)) +
   geom_point(color = 'green') +
   stat_smooth(method = "gam", formula = y ~ s(x), se = FALSE, color = 'darkgreen') +
-  labs(title = "Shannon Autoctone vs Distanza dagli Insediamenti Umani", x = "Distanza (m)", y = "Indice di Shannon")
+  labs(title = "f. Shannon Aut. vs Dist. Insediamenti", x = "Distanza (m)", y = "Indice di Shannon")
 
 combined_endem <- paa1 + paa2 + paa3 + paa4 + paa5 + paa6
-png("combined_endem.png", width = 10*300, height = 5*300, res = 300)
+png("combined_endem.png", width = 12*300, height = 5*300, res = 300)
 print(combined_endem)
 dev.off()
 
@@ -294,7 +295,7 @@ plot_br_alt <- ggplot(bray_altitude_df, aes(x = Altitude, y = Dissimilarity)) +
   geom_point(size = 3, color = "blue") +
   geom_smooth(method = "gam", se = TRUE, color = "black") +
   labs(title = "Altitudine vs Dissimilarità (Bray-Curtis)",
-       x = "Altitude", y = "Dissimilarità Media") +
+       x = "Altitudine", y = "Dissimilarità Media") +
   theme_minimal()
 png("plot_br_alt.png", width = 8*300, height = 6*300, res = 300)
 print(plot_br_alt)
@@ -349,42 +350,36 @@ beta_bray_long_clean <- beta_bray_long %>%
 plot_altitude_beta <- ggplot(beta_bray_long_clean, aes(x = Altitude_Diff, y = Beta_Diversity)) +
   geom_point(alpha = 0.5, color = "blue") +
   geom_smooth(method = "gam", se = TRUE, color = "black") +
-  labs(title = "Differenza di Altitudine vs Beta Diversità",
+  labs(title = "a. Diff. di Altitudine vs Beta Diversità",
        x = "Differenza di Altitudine",
        y = "Beta Diversità (Bray-Curtis)") +
   theme_minimal()
-png("plot_altitude_beta.png", width = 8*300, height = 6*300, res = 300)
-print(plot_altitude_beta)
-dev.off()
+
 summary(gam(Beta_Diversity ~ Altitude_Diff, data = beta_bray_long_clean))
 
 plot_street_beta <- ggplot(beta_bray_long_clean, aes(x = Street_Distance_Diff, y = Beta_Diversity)) +
   geom_point(alpha = 0.5, color = "red") +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
-  labs(title = "Differenza di Distanza vs Beta Diversità",
+  labs(title = "b. Diff. di Dist. dalla strada vs Beta Diversità",
        x = "Differenza di Distanza",
        y = "Beta Diversità (Bray-Curtis)") +
   theme_minimal()
-png("plot_street_beta.png", width = 8*300, height = 6*300, res = 300)
-print(plot_street_beta)
-dev.off()
+
 summary(gam(Beta_Diversity ~ Street_Distance_Diff, data = beta_bray_long_clean))
 
 plot_hs_beta <- ggplot(beta_bray_long_clean, aes(x = Human_Settlement_Distance_Diff, y = Beta_Diversity)) +
   geom_point(alpha = 0.5, color = "green") +
   geom_smooth(method = "gam", se = TRUE, color = "black") +
-  labs(title = "Differenza di Distanza dagli Insediamenti Umani vs Beta Diversità",
+  labs(title = "c. Diff. di Dist. dagli Insediamenti vs Beta Diversità",
        x = "Differenza di Distanza",
        y = "Beta Diversità (Bray-Curtis)") +
   theme_minimal()
-png("plot_hs_beta.png", width = 8*300, height = 6*300, res = 300)
-print(plot_hs_beta)
-dev.off()
+
 summary(gam(Beta_Diversity ~ Human_Settlement_Distance_Diff, data = beta_bray_long_clean))
 
 #stampo in png tutti e tre i grafici insieme
 combined_beta <- plot_altitude_beta + plot_street_beta + plot_hs_beta
-png("combined_beta.png", width = 10*300, height = 5*300, res = 300)
+png("combined_beta.png", width = 14*300, height = 5*300, res = 300)
 print(combined_beta)
 dev.off()
 
@@ -398,12 +393,12 @@ print(chao_estimates)
 
 ##### 5.2 Modellizzazione tramite GAM per la diversità gamma della vegetazione #####
 gam_richness <- gam(Richness ~ s(Altitude, k = 30) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
-cat("Risultati GAM per Richness:\n")
+cat("Risultati GAM per Ricchezza:\n")
 print(summary(gam_richness))
-# Salvataggio del grafico per il modello GAM di Richness
-png("gam_richness.png", width = 800, height = 600)
+# Salvataggio del grafico per il modello GAM di Ricchezza
+png("gam_Ricchezza.png", width = 800, height = 600)
 plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Richness ~ s(Altitude, k=30) + s(Distance) + s(Human_Settlement_Distance)")
+     main = "GAM: Ricchezza ~ s(Altitudine, k=30) + s(Distanza) + s(Human_Settlement_Distance)")
 dev.off()
 
 gam_shannon_gamma <- gam(Shannon ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
@@ -411,7 +406,7 @@ cat("Risultati GAM per Shannon (Gamma):\n")
 print(summary(gam_shannon_gamma))
 png("gam_shannon_gamma.png", width = 800, height = 600)
 plot(gam_shannon_gamma, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Shannon ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance)")
+     main = "GAM: Shannon ~ s(Altitudine) + s(Distanza) + s(Human_Settlement_Distance)")
 dev.off()
 
 ##### 5.3 Profili di diversità di Rényi #####
@@ -422,20 +417,36 @@ renyi_df <- as.data.frame(renyi_profile)
 renyi_df$Sample <- rownames(renyi_df)
 renyi_df <- pivot_longer(renyi_df, cols = -Sample, names_to = "scale", values_to = "diversity")
 renyi_df <- renyi_df %>% filter(!is.na(as.numeric(scale))) %>% mutate(scale = as.numeric(scale))
+
+# Selezione del primo punto di ogni profilo
+first_points <- renyi_df %>%
+  group_by(Sample) %>%
+  slice(1) %>%  # Seleziona il primo punto
+  ungroup()
+
+# Creazione del grafico con le etichette posizionate all'inizio
 renyi_plot <- ggplot(renyi_df, aes(x = scale, y = diversity, group = Sample, color = Sample)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
-  labs(title = "Profili di Rényi (tutti i plot)",
-       x = "Scale parameter (α)",
-       y = "Diversity") +
+  geom_label_repel(data = first_points, aes(label = Sample), size = 3, box.padding = 0.3, point.padding = 0.2, show.legend = FALSE) + 
+  labs(
+    title = "Profili di Rényi (tutti i plot)",
+    x = "Parametro scala (α)",
+    y = "Diversity"
+  ) +
   theme_minimal() +
-  theme(legend.position = "none",
-        plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
-        axis.title = element_text(size = 12),
-        axis.text = element_text(size = 10))
-png("renyi_plot.png", width = 10*300, height = 8*300, res = 300)
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+
+# Salvataggio del grafico
+png("renyi_plot_with_start_labels.png", width = 12*300, height = 8*300, res = 300)
 print(renyi_plot)
 dev.off()
+
 
 # Raggruppamento per Altitudine e Confronto dei Profili
 alt_breaks <- quantile(veg_altitude_plot, probs = c(0, 0.33, 0.66, 1), na.rm = TRUE)
@@ -469,7 +480,7 @@ renyi_group_df <- do.call(rbind, renyi_group_list)
 renyi_group_plot <- ggplot(renyi_group_df, aes(x = scale, y = diversity, color = Group, group = interaction(Sample, Group))) +
   geom_line(alpha = 0.5) +
   geom_point() +
-  labs(title = "Profili di Rényi per Gruppo di Altitudine", x = "Scale parameter (α)", y = "Diversity") +
+  labs(title = "Profili di Rényi per Gruppo di Altitudine", x = "Parametro scala (α)", y = "Diversità") +
   theme_minimal()
 png("renyi_group_plot.png", width = 10*300, height = 8*300, res = 300)
 print(renyi_group_plot)
@@ -479,48 +490,39 @@ dev.off()
 lep_alt_plot <- ggplot(lep_df, aes(x = Altitude, y = Richness)) +
   geom_point(color = "slateblue1") +
   geom_smooth(method = "gam", se = FALSE, color = "slateblue3") +
-  labs(title = "Lepidoptera Richness vs Altitude",
-       x = "Altitude (m)", y = "Species Richness") +
+  labs(title = "a. Ricch. lepidotteri vs Altitudine",
+       x = "Altitudine (m)", y = "Ricchezza di specie") +
   theme_minimal()
-png("lep_alt_plot.png", width = 8*300, height = 6*300, res = 300)
-print(lep_alt_plot)
-dev.off()
 
 leprich_alt <- gam(Richness ~ Altitude, data = lep_df)
-cat("Risultati GAM per Lepidotteri (Richness ~ Altitude):\n")
+cat("Risultati GAM per Lepidotteri (Ricchezza ~ Altitudine):\n")
 print(summary(leprich_alt))
 
 lep_dist_plot <- ggplot(lep_df, aes(x = Distance, y = Richness)) +
   geom_point(color = "orange1") +
   geom_smooth(method = "gam", se = FALSE, color = "orange3") +
-  labs(title = "Lepidoptera Richness vs Distance",
-       x = "Distance (m)", y = "Species Richness") +
+  labs(title = "b. Ricch. lepidotteri vs Dist. dalla strada",
+       x = "Dist. dalla strada (m)", y = "Ricchezza di specie") +
   theme_minimal()
-png("lep_dist_plot.png", width = 8*300, height = 6*300, res = 300)
-print(lep_dist_plot)
-dev.off()
 
 leprich_dist <- gam(Richness ~ Distance, data = lep_df)
-cat("Risultati GAM per Lepidotteri (Richness ~ Distance):\n")
+cat("Risultati GAM per Lepidotteri (Ricchezza ~ Dist. dalla strada):\n")
 print(summary(leprich_dist))
 
 lep_hs_plot <- ggplot(lep_df, aes(x = H_S_Distance, y = Richness)) +
   geom_point(color = "green1") +
   geom_smooth(method = "gam", se = FALSE, color = "green3") +
-  labs(title = "Lepidoptera Richness vs Human Settlement Distance",
-       x = "Human Settlement Distance (m)", y = "Species Richness") +
+  labs(title = "c. Ricch. lepidotteri vs Dist. dagli insediamenti",
+       x = "Dist. dagli insediamenti (m)", y = "Ricchezza di specie") +
   theme_minimal()
-png("lep_hs_plot.png", width = 8*300, height = 6*300, res = 300)
-print(lep_hs_plot)
-dev.off()
 
 leprich_hs <- gam(Richness ~ H_S_Distance, data = lep_df)
-cat("Risultati GAM per Lepidotteri (Richness ~ Human Settlement Distance):\n")
+cat("Risultati GAM per Lepidotteri (Ricchezza ~ Dist. dagli insediamenti):\n")
 print(summary(leprich_hs))
 
 # Combinazione dei grafici
 combined_lep <- lep_alt_plot + lep_dist_plot + lep_hs_plot
-png("combined_lep.png", width = 10*300, height = 5*300, res = 300)
+png("combined_lep.png", width = 12*300, height = 5*300, res = 300)
 print(combined_lep)
 dev.off()
 
@@ -544,3 +546,5 @@ print(summary(veg_lep_lm))
 cor_aed_lep <- cor.test(aed_plot, lep_richness_plot, method = "spearman", exact = FALSE)
 cat("Correlazione Spearman tra AED e Lepidoptera Richness:\n")
 print(cor_aed_lep)
+
+
