@@ -28,9 +28,7 @@ if(length(missing_packages)) install.packages(missing_packages)
 lapply(required_packages, library, character.only = TRUE)
 Workflow di Analisi
 ### 1. Caricamento dati e pre-elaborazione
-r
-Copia
-Modifica
+
 ### Definizione dei percorsi dei file
 file_path <- "C:/Users/Martina/Desktop/Tesi/Final_merged_file_Italian_and_Armenian_data.xlsx"
 file_path_alien <- "C:/Users/Martina/Desktop/Tesi/Armenian_sp_alien.xlsx"
