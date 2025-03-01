@@ -370,14 +370,11 @@ dev.off()
 #### 5. Diversità Gamma e analisi dei lepidotteri ####
 ##### 5.1 Stima della diversità gamma #####
 gamma_diversity_obs <- sum(rowSums(veg_matrix_subplot > 0) > 0)
-cat("Gamma diversity osservata:", gamma_diversity_obs, "\n")
 chao_estimates <- specpool(veg_matrix_subplot_t)
-cat("Stima della ricchezza (Chao1, ACE, etc.):\n")
 print(chao_estimates)
 
 ##### 5.2 Modellizzazione tramite GAM per la diversità gamma della vegetazione #####
 gam_richness <- gam(Richness ~ s(Altitude, k = 30) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
-cat("Risultati GAM per Ricchezza:\n")
 print(summary(gam_richness))
 # Salvataggio del grafico per il modello GAM di Ricchezza
 png("gam_Ricchezza.png", width = 800, height = 600)
@@ -386,16 +383,22 @@ plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5,
 dev.off()
 
 gam_shannon_gamma <- gam(Shannon ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
-cat("Risultati GAM per Shannon (Gamma):\n")
 print(summary(gam_shannon_gamma))
 png("gam_shannon_gamma.png", width = 800, height = 600)
 plot(gam_shannon_gamma, residuals = TRUE, pch = 19, cex = 0.5,
      main = "GAM: Shannon ~ s(Altitudine) + s(Distanza) + s(Human_Settlement_Distance)")
 dev.off()
 
+gam_simpson_gamma <- gam(Simpson ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
+print(summary(gam_simpson_gamma))
+# Salvataggio del grafico per il modello GAM di Ricchezza
+png("gam_Ricchezza.png", width = 800, height = 600)
+plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5,
+     main = "GAM: Ricchezza ~ s(Altitudine, k=30) + s(Distanza) + s(Human_Settlement_Distance)")
+dev.off()
+
 ##### 5.3 Profili di diversità di Rényi #####
 renyi_profile <- renyi(veg_matrix_plot_t, scales = c(0, 0.5, 1, 1.5, 2, 2.5, 3, Inf))
-cat("Profilo di Rényi:\n")
 print(renyi_profile)
 renyi_df <- as.data.frame(renyi_profile)
 renyi_df$Sample <- rownames(renyi_df)
@@ -479,7 +482,6 @@ lep_alt_plot <- ggplot(lep_df, aes(x = Altitude, y = Richness)) +
   theme_minimal()
 
 leprich_alt <- gam(Richness ~ Altitude, data = lep_df)
-cat("Risultati GAM per Lepidotteri (Ricchezza ~ Altitudine):\n")
 print(summary(leprich_alt))
 
 lep_dist_plot <- ggplot(lep_df, aes(x = Distance, y = Richness)) +
@@ -490,7 +492,6 @@ lep_dist_plot <- ggplot(lep_df, aes(x = Distance, y = Richness)) +
   theme_minimal()
 
 leprich_dist <- gam(Richness ~ Distance, data = lep_df)
-cat("Risultati GAM per Lepidotteri (Ricchezza ~ Dist. dalla strada):\n")
 print(summary(leprich_dist))
 
 lep_hs_plot <- ggplot(lep_df, aes(x = H_S_Distance, y = Richness)) +
@@ -501,7 +502,6 @@ lep_hs_plot <- ggplot(lep_df, aes(x = H_S_Distance, y = Richness)) +
   theme_minimal()
 
 leprich_hs <- gam(Richness ~ H_S_Distance, data = lep_df)
-cat("Risultati GAM per Lepidotteri (Ricchezza ~ Dist. dagli insediamenti):\n")
 print(summary(leprich_hs))
 
 # Combinazione dei grafici
@@ -525,10 +525,6 @@ veg_lep_df <- data.frame(
   LepRichness = lep_richness_plot
 )
 veg_lep_lm <- lm(LepRichness ~ AED, data = veg_lep_df)
-cat("Risultati della regressione (LepRichness ~ AED):\n")
 print(summary(veg_lep_lm))
 cor_aed_lep <- cor.test(aed_plot, lep_richness_plot, method = "spearman", exact = FALSE)
-cat("Correlazione Spearman tra AED e Lepidoptera Richness:\n")
 print(cor_aed_lep)
-
-
