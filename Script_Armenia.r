@@ -273,7 +273,7 @@ print(permanova_bray_beta)
 permanova_jaccard_beta<- adonis2(veg_matrix_plot_pa ~ veg_altitude_plot + veg_h_s_distance_plot, method = "jaccard")
 print(permanova_jaccard_beta)
 
-## 4.4 NMDS per visualizzare le differenze nella composizione delle comunità
+#### 4.4 NMDS per visualizzare le differenze nella composizione delle comunità ####
 nmds_beta <- metaMDS(veg_bray_beta, k = 2, trymax = 100)
 nmds_scores_beta <- as.data.frame(scores(nmds_beta))
 nmds_scores_beta$Sample <- rownames(nmds_scores_beta)
@@ -286,23 +286,7 @@ png("nmds_plot_beta.png", width = 8*300, height = 6*300, res = 300)
 print(nmds_plot_beta)
 dev.off()
 
-## 4.5 Analisi della relazione tra dissimilarità e altitudine
-bray_altitude_df <- data.frame(
-  Altitude = veg_altitude_plot,
-  Dissimilarity = rowMeans(as.matrix(veg_bray_beta))
-)
-plot_br_alt <- ggplot(bray_altitude_df, aes(x = Altitude, y = Dissimilarity)) +
-  geom_point(size = 3, color = "blue") +
-  geom_smooth(method = "gam", se = TRUE, color = "black") +
-  labs(title = "Altitudine vs Dissimilarità (Bray-Curtis)",
-       x = "Altitudine", y = "Dissimilarità Media") +
-  theme_minimal()
-png("plot_br_alt.png", width = 8*300, height = 6*300, res = 300)
-print(plot_br_alt)
-dev.off()
-summary(gam(Dissimilarity ~ Altitude, data = bray_altitude_df))
-
-## 4.6 Dendrogramma basato sulla dissimilarità di Bray-Curtis
+#### 4.5 Dendrogramma basato sulla dissimilarità di Bray-Curtis ####
 bray_clustering_beta <- hclust(veg_bray_beta, method = "average")
 dendro_data_beta <- as.dendrogram(bray_clustering_beta)
 dendro_plot_beta <- ggdendrogram(dendro_data_beta, theme_dendro = FALSE) +
@@ -312,7 +296,7 @@ png("dendrogramma.png", width = 8*300, height = 6*300, res = 300)
 print(dendro_plot_beta)
 dev.off()
 
-## 4.7 Analisi pairwise e relazione con variabili ambientali
+#### 4.6 Analisi pairwise e relazione con variabili ambientali ####
 beta_bray_pairwise <- vegdist(veg_matrix_plot_t, method = "bray")
 beta_bray_df <- as.data.frame(as.matrix(beta_bray_pairwise))
 beta_bray_df$Site1 <- rownames(beta_bray_df)
