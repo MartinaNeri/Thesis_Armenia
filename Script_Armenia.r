@@ -263,7 +263,7 @@ print(dissim_sorensen)
 beta_pair       <- beta.pair(veg_matrix_subplot_pa, index.family = "sorensen")
 beta_turnover   <- beta_pair$beta.sim      
 beta_nestedness <- beta_pair$beta.sne      
-beta_total      <- beta_pair$beta.sor      
+beta_total      <- beta_pair$beta.sor   
 beta_multi_sorensen <- beta.multi(veg_matrix_subplot_pa, index.family = "sorensen")
 print(beta_multi_sorensen)
 
@@ -444,9 +444,6 @@ renyi_profiles_group <- lapply(split(1:nrow(veg_matrix_plot_t), plot_groups), fu
   if (all(idx <= nrow(veg_matrix_plot_t))) {
     mat_group <- veg_matrix_plot_t[idx, , drop = FALSE]
     return(renyi(mat_group, scales = c(0, 0.5, 1, 1.5, 2, 2.5, 3, Inf)))
-  } else {
-    warning("Indici fuori limite, gruppo saltato")
-    return(NULL)
   }
 })
 
@@ -473,7 +470,7 @@ png("renyi_group_plot.png", width = 10*300, height = 8*300, res = 300)
 print(renyi_group_plot)
 dev.off()
 
-##### 5.4 Analisi dei lepidotteri #####
+#### 6. Analisi dei lepidotteri ####
 lep_alt_plot <- ggplot(lep_df, aes(x = Altitude, y = Richness)) +
   geom_point(color = "slateblue1") +
   geom_smooth(method = "gam", se = FALSE, color = "slateblue3") +
@@ -511,7 +508,7 @@ print(combined_lep)
 dev.off()
 
 
-##### 5.5 Relazione tra vegetazione e lepidotteri #####
+###### 6.1 Relazione tra vegetazione e lepidotteri ########
 shannon_diversity_plot <- diversity(veg_matrix_plot_t, index = "shannon")
 simpson_diversity_plot <- diversity(veg_matrix_plot_t, index = "invsimpson")
 veg_richness_plot      <- colSums(veg_matrix_plot > 0)
@@ -526,5 +523,25 @@ veg_lep_df <- data.frame(
 )
 veg_lep_lm <- lm(LepRichness ~ AED, data = veg_lep_df)
 print(summary(veg_lep_lm))
+
+veg_lep_plot <- ggplot(veg_lep_df, aes(x = AED, y = LepRichness)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", se = FALSE, color = "purple") +
+  labs(title = "Relazione tra AED e Ricchezza di Lepidotteri",
+       x = "AED", y = "Ricchezza di Lepidotteri") +
+  theme_minimal()
+print(veg_lep_plot)
+
+veg_lep_gam <- gam(LepRichness ~ s(AED), data = veg_lep_df)
+print(summary(veg_lep_gam))
+
+veg_lep_plot_gam <- ggplot(veg_lep_df, aes(x = AED, y = LepRichness)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "gam", se = FALSE, color = "purple") +
+  labs(title = "Relazione tra AED e Ricchezza di Lepidotteri (GAM)",
+       x = "AED", y = "Ricchezza di Lepidotteri") +
+  theme_minimal()
+print(veg_lep_plot_gam)
+
 cor_aed_lep <- cor.test(aed_plot, lep_richness_plot, method = "spearman", exact = FALSE)
 print(cor_aed_lep)
