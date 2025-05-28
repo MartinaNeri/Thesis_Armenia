@@ -373,31 +373,7 @@ gamma_diversity_obs <- sum(rowSums(veg_matrix_subplot > 0) > 0)
 chao_estimates <- specpool(veg_matrix_subplot_t)
 print(chao_estimates)
 
-##### 5.2 Modellizzazione tramite GAM per la diversità gamma della vegetazione #####
-gam_richness <- gam(Richness ~ s(Altitude, k = 30) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
-print(summary(gam_richness))
-# Salvataggio del grafico per il modello GAM di Ricchezza
-png("gam_Ricchezza.png", width = 800, height = 600)
-plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Ricchezza ~ s(Altitudine, k=30) + s(Distanza) + s(Human_Settlement_Distance)")
-dev.off()
-
-gam_shannon_gamma <- gam(Shannon ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
-print(summary(gam_shannon_gamma))
-png("gam_shannon_gamma.png", width = 800, height = 600)
-plot(gam_shannon_gamma, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Shannon ~ s(Altitudine) + s(Distanza) + s(Human_Settlement_Distance)")
-dev.off()
-
-gam_simpson_gamma <- gam(Simpson ~ s(Altitude) + s(Distance) + s(Human_Settlement_Distance), data = env_index_subplot)
-print(summary(gam_simpson_gamma))
-# Salvataggio del grafico per il modello GAM di Ricchezza
-png("gam_Ricchezza.png", width = 800, height = 600)
-plot(gam_richness, residuals = TRUE, pch = 19, cex = 0.5,
-     main = "GAM: Ricchezza ~ s(Altitudine, k=30) + s(Distanza) + s(Human_Settlement_Distance)")
-dev.off()
-
-##### 5.3 Profili di diversità di Rényi #####
+##### 5.1 Profili di diversità di Rényi #####
 renyi_profile <- renyi(veg_matrix_plot_t, scales = c(0, 0.5, 1, 1.5, 2, 2.5, 3, Inf))
 print(renyi_profile)
 renyi_df <- as.data.frame(renyi_profile)
