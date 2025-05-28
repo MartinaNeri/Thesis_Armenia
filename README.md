@@ -25,8 +25,8 @@ required_packages <- c("readxl", "vegan", "ggplot2", "stats", "dplyr", "patchwor
    - Stima della diversità totale (osservata e tramite metodi come Chao1).  
    - Modellizzazione GAM per verificare l’effetto delle variabili ambientali.
    - Profilo di Diversità di Rényi:**  
-   - Calcolo del profilo a scale diverse (α).  
-   - Visualizzazione grafica e raggruppamento per altitudine.
+   - - Calcolo del profilo a scale diverse (α).  
+   - - Visualizzazione grafica e raggruppamento per altitudine.
 
 5. **Lepidotteri:**  
    - Calcolo della ricchezza delle specie di lepidotteri.  
